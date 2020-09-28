@@ -10,57 +10,86 @@
        01  Counter PIC 99.
        01  DiamondSize PIC 99.
        01  TempSize PIC 99.
+       01  NumberOfSpaces PIC 99.
 
        PROCEDURE DIVISION.
+           DISPLAY "Enter capital letter:"
            ACCEPT Char-Value
-           COMPUTE DiamondSize = Numeric-Value - Curr-Numeric-Value.
-           
+           PERFORM Calculate-Diamond-Size
+           COMPUTE Counter = DiamondSize - 1
+
+      * Print the first 'A' Row
            PERFORM PRINT-HEAD-COLUMN
-           PERFORM DiamondSize TIMES
+
+      * Print all rows until the middle one    
+           PERFORM Counter TIMES
                Add 1 to Curr-Numeric-Value
                PERFORM PRINT-MIDDLE-COLUMN
            END-PERFORM 
+
+      * Print the middle row
+           Add 1 to Curr-Numeric-Value
+           PERFORM PRINT-MIDDLE-COLUMN
            
-           COMPUTE TempSize = DiamondSize - 1
-           PERFORM TempSize TIMES
+      * Print all rows until the final row
+           PERFORM Counter TIMES
                Add -1 to Curr-Numeric-Value
                PERFORM PRINT-MIDDLE-COLUMN
            END-PERFORM 
-
+           
+      * Print the final 'A' row
            Add -1 to Curr-Numeric-Value
            PERFORM PRINT-HEAD-COLUMN
            GOBACK.
 
        PRINT-HEAD-COLUMN Section.
-           PERFORM VARYING Counter FROM 0 by 1
-               UNTIL Counter = Numeric-Value - Curr-Numeric-Value
-               DISPLAY " " WITH NO ADVANCING
-           END-PERFORM
-               DISPLAY "A" WITH NO ADVANCING
-           PERFORM VARYING Counter FROM 0 by 1
-               UNTIL Counter = Numeric-Value - Curr-Numeric-Value
-               DISPLAY " " WITH NO ADVANCING
-           END-PERFORM
+           PERFORM Calculate-Spaces-Before
+
+           Perform Print-Spaces
+
+           DISPLAY "A" WITH NO ADVANCING
+
+           Perform Print-Spaces
            DISPLAY " "
        Exit.
 
        PRINT-MIDDLE-COLUMN Section.
-           PERFORM VARYING Counter FROM 0 by 1
-               UNTIL Counter = Numeric-Value - Curr-Numeric-Value
-               DISPLAY " " WITH NO ADVANCING
-           END-PERFORM
-               DISPLAY Curr-Char-Value WITH NO ADVANCING
-           PERFORM VARYING Counter FROM 0 by 1
-               UNTIL Counter = (2 * (DiamondSize - 
-                   (Numeric-Value - Curr-Numeric-Value + 1))) + 1
-               DISPLAY " " WITH NO ADVANCING
-           END-PERFORM               
-               DISPLAY Curr-Char-Value WITH NO ADVANCING
-           PERFORM VARYING Counter FROM 0 by 1
-               UNTIL Counter = Numeric-Value - Curr-Numeric-Value
-               DISPLAY " " WITH NO ADVANCING
-           END-PERFORM
+           PERFORM Calculate-Spaces-Before
+           Perform Print-Spaces
+
+           DISPLAY Curr-Char-Value WITH NO ADVANCING
+
+           PERFORM Calculate-Spaces-Within
+           Perform Print-Spaces
+
+           DISPLAY Curr-Char-Value WITH NO ADVANCING
+
+           PERFORM Calculate-Spaces-Before
+           Perform Print-Spaces
            DISPLAY " "
        Exit.
+
+       Calculate-Diamond-Size SECTION.
+      * Calculating the Dimanond Size (A=65).
+           COMPUTE DiamondSize = Numeric-Value - 65.
+       EXIT.
+
+       Calculate-Spaces-Within SECTION.
+           PERFORM Calculate-Spaces-Before
+           COMPUTE NumberOfSpaces = 
+             (2 * (DiamondSize - (NumberOfSpaces + 1))) + 1
+           .
+       EXIT.
+
+       Calculate-Spaces-Before SECTION.
+           COMPUTE NumberOfSpaces = Numeric-Value - Curr-Numeric-Value
+           .
+       EXIT.
+
+       Print-Spaces SECTION.
+           PERFORM NumberOfSpaces TIMES
+               DISPLAY " " WITH NO ADVANCING
+           END-PERFORM
+       EXIT.
 
        END PROGRAM DIAMOND.
