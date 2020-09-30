@@ -199,20 +199,6 @@
                        TO UT-EXPECTED
            SET UT-COMPARE-DEFAULT TO TRUE
            PERFORM UT-ASSERT-EQUAL
-
-           PERFORM UT-AFTER
-           MOVE "Does not segfault for Höhe = 99"
-               TO UT-TEST-CASE-NAME
-           PERFORM UT-BEFORE
-               MOVE 99 TO HOEHE
-               PERFORM Main
-           ADD 1 TO UT-TEST-CASE-COUNT
-           SET UT-NORMAL-COMPARE TO TRUE
-           MOVE 99 TO UT-ACTUAL
-           MOVE 99
-                       TO UT-EXPECTED
-           SET UT-COMPARE-DEFAULT TO TRUE
-           PERFORM UT-ASSERT-EQUAL
            PERFORM UT-AFTER
             COPY ZUTZCPD     .
            .
@@ -266,8 +252,8 @@
            .
        Baue-Zweige SECTION.
            INITIALIZE ZWEIGE
-           MOVE "/" TO ZWEIGE(HOEHE - ZWEIGEBENE:)
-           MOVE "\" TO ZWEIGE(HOEHE + ZWEIGEBENE:)
+           MOVE "/" TO ZWEIGE(HOEHE - ZWEIGEBENE:1)
+           MOVE "\" TO ZWEIGE(HOEHE + ZWEIGEBENE:1)
 
 
            .
@@ -282,7 +268,7 @@
            WHEN OTHER
                MOVE "X" TO SPITZE(HOEHE:)
                MOVE "A" TO ZWEIGE(HOEHE:)
-               MOVE "| |" TO STAMM(HOEHE - 1:)
+               MOVE "| |" TO STAMM(HOEHE - 1:3)
            END-EVALUATE
 
 

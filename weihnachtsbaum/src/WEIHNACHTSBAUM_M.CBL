@@ -48,8 +48,8 @@
 
        Baue-Zweige SECTION.
            INITIALIZE ZWEIGE
-           MOVE "/" TO ZWEIGE(HOEHE - ZWEIGEBENE:)
-           MOVE "\" TO ZWEIGE(HOEHE + ZWEIGEBENE:)
+           MOVE "/" TO ZWEIGE(HOEHE - ZWEIGEBENE:1)
+           MOVE "\" TO ZWEIGE(HOEHE + ZWEIGEBENE:1)
            .
 
        Baue-Baum-Geruest SECTION.
@@ -63,7 +63,7 @@
            WHEN OTHER
                MOVE "X" TO SPITZE(HOEHE:)
                MOVE "A" TO ZWEIGE(HOEHE:)
-               MOVE "| |" TO STAMM(HOEHE - 1:)
+               MOVE "| |" TO STAMM(HOEHE - 1:3)
            END-EVALUATE
            .
 
