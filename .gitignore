@@ -8,3 +8,4 @@
 !*.sh
 !*.SH
 !*/test/resources/*C
+TESTPRG.CBL
