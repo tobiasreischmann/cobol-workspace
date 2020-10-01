@@ -81,3 +81,10 @@
                SET ALIVE(20,11) TO TRUE
                PERFORM Alter-State
            EXPECT DEAD(20,10) TO BE TRUE
+
+           TESTCASE 'Die'
+               SET ALIVE(01,01) TO TRUE
+               SET ALIVE(01,02) TO TRUE
+               SET ALIVE(02,03) TO TRUE
+               PERFORM Alter-State
+           EXPECT DEAD(01,01) TO BE TRUE
