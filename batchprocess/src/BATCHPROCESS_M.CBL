@@ -20,7 +20,7 @@
            01 TRANSACTION-F.
             05 BANK-ID-F PIC 9(5).
             05 ACCOUNT-ID-F PIC 9(10).
-            05 AMOUNT-F PIC 9(10).
+            05 AMOUNT-F PIC Z(07)9V99.
             05 COMMENT-F PIC X(53).
            FD ACCOUNT-DATA.
            01 ACCOUNT-DATA-F.
@@ -30,7 +30,7 @@
        01 TRANSACTION.
            05 TR-BANK-ID PIC 9(5).
            05 TR-ACCOUNT-ID PIC 9(10).
-           05 TR-AMOUNT PIC 9(10).
+           05 TR-AMOUNT PIC 9(08)V99 VALUE 0.
            05 TR-COMMENT PIC X(53).
        01 FILE-STATUS.
            05 EOF PIC X(1).
@@ -50,7 +50,7 @@
            05 FORMATTED-SALDO PIC Z(07)9.99.
            05 BANK-COUNTER PIC 999.
            05 ACCOUNT-COUNTER PIC 999.
-           05 BANK-SUM PIC 9(10).
+           05 BANK-SUM PIC 9(08)V99.
            05 OUTPUT-BUFFER PIC X(36).
        PROCEDURE DIVISION.
            PERFORM ReadFile
@@ -60,8 +60,7 @@
            STOP RUN.
        GenerateAccountLine SECTION.
            INITIALIZE OUTPUT-BUFFER
-           COMPUTE FORMATTED-SALDO = SALDO(BANK-COUNTER,ACCOUNT-COUNTER)
-                / 100
+           MOVE SALDO(BANK-COUNTER,ACCOUNT-COUNTER) TO FORMATTED-SALDO
            MOVE function concatenate('Account ',
                ACCOUNT-ID(BANK-COUNTER,ACCOUNT-COUNTER),
                ':     ', FORMATTED-SALDO)
@@ -69,7 +68,7 @@
            .
        GenerateTotalLine SECTION.
            INITIALIZE OUTPUT-BUFFER
-           COMPUTE FORMATTED-SALDO = BANK-SUM / 100
+           MOVE BANK-SUM TO FORMATTED-SALDO
            MOVE function concatenate('Total EUR for ',
                BANK-ID(BANK-COUNTER), ':    ', FORMATTED-SALDO)
                TO OUTPUT-BUFFER
