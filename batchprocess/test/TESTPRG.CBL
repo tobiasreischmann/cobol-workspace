@@ -16,7 +16,7 @@
            01 TRANSACTION-F.
             05 BANK-ID-F PIC 9(5).
             05 ACCOUNT-ID-F PIC 9(10).
-            05 AMOUNT-F PIC Z(7)9V99.
+            05 AMOUNT-F PIC 9(10).
             05 COMMENT-F PIC X(53).
        WORKING-STORAGE SECTION.
             COPY ZUTZCWS     .
@@ -24,7 +24,7 @@
        01 TRANSACTION.
            05 TR-BANK-ID PIC 9(5).
            05 TR-ACCOUNT-ID PIC 9(10).
-           05 TR-AMOUNT PIC Z(7)9V99.
+           05 TR-AMOUNT PIC 9(10).
            05 TR-COMMENT PIC X(53).
        01 FILE-STATUS.
            05 EOF PIC X(1).
@@ -152,6 +152,29 @@
            PERFORM UT-ASSERT-EQUAL
 
            PERFORM UT-AFTER
+           MOVE 'Add amount to saldo'
+               TO UT-TEST-CASE-NAME
+           PERFORM UT-BEFORE
+                MOVE 1 TO BANK-INDEX
+                MOVE 2 TO ACCOUNT-INDEX
+                MOVE "12341" TO BANK-ID(BANK-INDEX)
+                MOVE "1234567891" TO ACCOUNT-ID(BANK-INDEX,1)
+                MOVE "1234567892" TO ACCOUNT-ID(BANK-INDEX,2)
+                MOVE "1234567893" TO ACCOUNT-ID(BANK-INDEX,3)
+                MOVE "12" TO SALDO(BANK-INDEX,ACCOUNT-INDEX)
+                MOVE 1 TO NUMBER-OF-BANKS
+                MOVE 3 TO NUMBER-OF-ACCOUNTS(BANK-INDEX)
+                MOVE "30" TO TR-AMOUNT
+                PERFORM AddToSaldo
+           ADD 1 TO UT-TEST-CASE-COUNT
+           SET UT-NORMAL-COMPARE TO TRUE
+           MOVE SALDO(BANK-INDEX,ACCOUNT-INDEX) TO UT-ACTUAL
+           MOVE "0000000042"
+                       TO UT-EXPECTED
+           SET UT-COMPARE-DEFAULT TO TRUE
+           PERFORM UT-ASSERT-EQUAL
+
+           PERFORM UT-AFTER
             COPY ZUTZCPD     .
            .
        UT-BEFORE.
@@ -205,14 +228,19 @@
 
 
            .
+       AddToSaldo SECTION.
+           ADD TR-AMOUNT TO SALDO(BANK-INDEX,ACCOUNT-INDEX)
+
+
+           .
        ReadFile SECTION.
            OPEN INPUT TRANSACTIONS
-               PERFORM ReadLine
-               PERFORM SearchBank
-               PERFORM SearchBank
-               PERFORM SearchBank
-               PERFORM SearchBank
-               PERFORM SearchBank
+               PERFORM UNTIL EOF =  "Y"
+                   PERFORM ReadLine
+                   PERFORM SearchBank
+                   PERFORM SearchAccount
+                   PERFORM AddToSaldo
+               END-PERFORM
            CLOSE TRANSACTIONS
            .
        ReadLine SECTION.

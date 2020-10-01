@@ -63,3 +63,17 @@
                 PERFORM SearchAccount
            EXPECT ACCOUNT-ID(BANK-INDEX,6) TO BE "1234567896"
 
+           TESTCASE 'Add amount to saldo'
+                MOVE 1 TO BANK-INDEX
+                MOVE 2 TO ACCOUNT-INDEX
+                MOVE "12341" TO BANK-ID(BANK-INDEX)
+                MOVE "1234567891" TO ACCOUNT-ID(BANK-INDEX,1)
+                MOVE "1234567892" TO ACCOUNT-ID(BANK-INDEX,2)
+                MOVE "1234567893" TO ACCOUNT-ID(BANK-INDEX,3)
+                MOVE "12" TO SALDO(BANK-INDEX,ACCOUNT-INDEX)
+                MOVE 1 TO NUMBER-OF-BANKS
+                MOVE 3 TO NUMBER-OF-ACCOUNTS(BANK-INDEX)
+                MOVE "30" TO TR-AMOUNT
+                PERFORM AddToSaldo
+           EXPECT SALDO(BANK-INDEX,ACCOUNT-INDEX) TO BE "0000000042"
+
